@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santhosh Raj — Backend Engineer</title>
+<meta name="description" content="Backend engineer. Java, Spring Boot, microservices. I build transaction systems that don't go down.">
+<meta property="og:title" content="Santhosh Raj — Backend Engineer">
+<meta property="og:description" content="Java · Spring Boot · Microservices · follow the white rabbit.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23030803'/><text y='78' x='20' font-size='75' fill='%2300ff7f' font-family='monospace'>S</text></svg>">
+<style>
+  :root{
+    --bg:#030803; --panel:#08110899; --green:#00ff7f; --green2:#00c060;
+    --text:#d9e7d9; --muted:#7e937e; --border:#162a16;
+    --mono:"SF Mono",ui-monospace,Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.65;
+    overflow-x:hidden;cursor:none}
+  a,button{cursor:none}
+  @media(pointer:coarse){body,a,button{cursor:auto}.cur,.ring{display:none}}
+
+  canvas#matrix{position:fixed;inset:0;z-index:0}
+  main{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:0 24px}
+
+  /* ===== custom cursor ===== */
+  .cur{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--green);z-index:999;
+    pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 14px var(--green)}
+  .ring{position:fixed;width:34px;height:34px;border-radius:50%;border:1px solid var(--green2);z-index:998;
+    pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s,opacity .25s}
+  .ring.on{width:56px;height:56px;border-color:var(--green)}
+
+  /* ===== progress + nav ===== */
+  #bar{position:fixed;top:0;left:0;height:2px;background:var(--green);width:0;z-index:99;box-shadow:0 0 12px var(--green)}
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;
+    padding:15px 30px;backdrop-filter:blur(16px);background:#03080388;border-bottom:1px solid var(--border)}
+  nav .logo{color:var(--green);font-weight:800;font-family:var(--mono);letter-spacing:2px}
+  nav a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:13px;font-family:var(--mono);transition:.2s}
+  nav a:hover{color:var(--green);text-shadow:0 0 12px var(--green)}
+
+  /* ===== hero ===== */
+  header{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+  .prompt{font-family:var(--mono);color:var(--green2);font-size:14px;margin-bottom:16px}
+  .prompt::before{content:"➜ ";color:var(--green)}
+
+  h1{font-size:clamp(42px,8vw,84px);font-weight:800;letter-spacing:-3px;line-height:1.0;position:relative}
+  .glitch{position:relative;display:inline-block;color:var(--green);text-shadow:0 0 30px #00ff7f44}
+  .glitch::before,.glitch::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;overflow:hidden}
+  .glitch::before{color:#0ff;z-index:-1;animation:gl1 3.5s infinite steps(1)}
+  .glitch::after{color:#f0f;z-index:-2;animation:gl2 3.5s infinite steps(1)}
+  @keyframes gl1{0%,93%{clip-path:inset(0 0 100% 0);transform:none}
+    94%{clip-path:inset(10% 0 60% 0);transform:translate(-4px,-2px)}
+    96%{clip-path:inset(60% 0 10% 0);transform:translate(4px,2px)}
+    98%,100%{clip-path:inset(0 0 100% 0);transform:none}}
+  @keyframes gl2{0%,93%{clip-path:inset(0 0 100% 0);transform:none}
+    95%{clip-path:inset(40% 0 30% 0);transform:translate(5px,1px)}
+    97%{clip-path:inset(5% 0 80% 0);transform:translate(-5px,-1px)}
+    99%,100%{clip-path:inset(0 0 100% 0);transform:none}}
+
+  #typed{font-family:var(--mono);color:var(--muted);font-size:clamp(15px,2.4vw,19px);margin-top:20px;min-height:1.7em}
+  #typed::after{content:"▋";color:var(--green);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{padding:12px 24px;border:1px solid var(--green);border-radius:12px;color:var(--green);text-decoration:none;
+    font-size:14px;font-weight:600;background:transparent;position:relative;overflow:hidden;
+    transition:color .3s,box-shadow .3s;will-change:transform}
+  .btn::before{content:"";position:absolute;inset:0;background:var(--green);transform:translateY(101%);
+    transition:transform .3s;z-index:-1}
+  .btn:hover{color:#031003;box-shadow:0 0 36px #00ff7f55}
+  .btn:hover::before{transform:none}
+  .btn.ghost{border-color:var(--border);color:var(--muted)}
+  .btn.ghost::before{background:#0d1f0d}
+  .btn.ghost:hover{color:var(--green);border-color:var(--green);box-shadow:none}
+  .hint{margin-top:50px;font-size:12px;color:#314531;font-family:var(--mono)}
+
+  /* ===== sections + decode headings ===== */
+  section{padding:96px 0}
+  h2{font-size:14px;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:34px;
+    font-family:var(--mono);min-height:1.4em}
+  h2::before{content:"// "}
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .7s,transform .7s}
+  .reveal.show{opacity:1;transform:none}
+
+  .about p{font-size:17px;max-width:660px;margin-bottom:14px}
+  .about b{color:var(--green)}
+  .stats{display:flex;gap:44px;margin-top:36px;flex-wrap:wrap}
+  .stat b{display:block;font-size:36px;color:var(--green);font-weight:800;font-variant-numeric:tabular-nums}
+  .stat span{font-size:13px;color:var(--muted)}
+
+  .tl{border-left:1px solid var(--border);padding-left:30px}
+  .tl-item{position:relative;margin-bottom:40px}
+  .tl-item::before{content:"";position:absolute;left:-35px;top:9px;width:9px;height:9px;border-radius:50%;
+    background:var(--green);box-shadow:0 0 14px var(--green)}
+  .tl-item h3{font-size:19px;font-weight:700}
+  .tl-item .when{font-size:13px;color:var(--green2);font-family:var(--mono);margin:3px 0 12px}
+  .tl-item li{color:var(--muted);font-size:15px;margin:8px 0 8px 18px}
+  .tl-item li::marker{color:var(--green)}
+
+  /* ===== cards with glare ===== */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;
+    position:relative;overflow:hidden;backdrop-filter:blur(6px);
+    transition:border-color .3s,box-shadow .3s;will-change:transform;transform-style:preserve-3d}
+  .card:hover{border-color:var(--green);box-shadow:0 0 44px #00ff7f22}
+  .card .glare{position:absolute;inset:0;background:radial-gradient(420px circle at var(--gx,50%) var(--gy,50%),#00ff7f14,transparent 45%);
+    pointer-events:none}
+  .card h3{font-size:17px;margin-bottom:9px;color:var(--text)}
+  .card h3::before{content:"▸ ";color:var(--green)}
+  .card p{font-size:14px;color:var(--muted);margin-bottom:16px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px}
+  .tags span{font-size:11px;font-family:var(--mono);color:var(--green);border:1px solid var(--border);
+    padding:3px 10px;border-radius:99px}
+
+  .skillrow{margin-bottom:18px}
+  .skillrow b{font-size:13px;font-family:var(--mono);color:var(--green2);display:block;margin-bottom:9px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips span{padding:7px 15px;background:var(--panel);border:1px solid var(--border);border-radius:11px;
+    font-size:13px;transition:.2s;backdrop-filter:blur(4px)}
+  .chips span:hover{border-color:var(--green);color:var(--green);transform:translateY(-4px);
+    box-shadow:0 6px 20px #00ff7f1a}
+
+  .contact a{color:var(--green);text-decoration:none;font-size:19px;font-family:var(--mono)}
+  .contact a:hover{text-shadow:0 0 16px var(--green)}
+  footer{padding:44px 0;text-align:center;color:#314531;font-size:12px;font-family:var(--mono)}
+
+  /* wake-up overlay (type "neo") */
+  #wake{position:fixed;inset:0;z-index:200;background:#000;display:none;align-items:center;justify-content:center;
+    font-family:var(--mono);color:var(--green);font-size:clamp(16px,3vw,26px)}
+  #wake.on{display:flex}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="cur"></div><div class="ring"></div>
+<div id="bar"></div>
+<div id="wake"></div>
+
+<nav>
+  <div class="logo">SR_</div>
+  <div>
+    <a href="#about">about</a><a href="#work">work</a><a href="#projects">projects</a>
+    <a href="#skills">skills</a><a href="#contact">contact</a>
+  </div>
+</nav>
+
+<main>
+<header>
+  <div class="prompt">~/santhosh $ whoami</div>
+  <h1><span class="glitch" data-t="SANTHOSH RAJ">SANTHOSH RAJ</span><br>
+      <span style="color:var(--text);font-size:.55em;letter-spacing:-1px">I build backends that don't blink.</span></h1>
+  <div id="typed"></div>
+  <div class="cta">
+    <a class="btn magnetic" href="resume.pdf" download="Santhosh_Raj_Resume.pdf">⬇ Resume</a>
+    <a class="btn magnetic ghost" href="https://github.com/ZoroMaki" target="_blank">GitHub</a>
+    <a class="btn magnetic ghost" href="https://linkedin.com/in/thesanthoshraj" target="_blank">LinkedIn</a>
+  </div>
+  <div class="hint">press M for rave mode · there is no spoon</div>
+</header>
+
+<section id="about" class="about">
+  <h2 class="decode">About</h2>
+  <div class="reveal">
+    <p>I'm a backend engineer at <b>TCS</b>, four years deep into banking systems for a top-5 US bank. My job is making sure money-moving software stays boring — no surprises, no downtime, no 2am calls.</p>
+    <p>Started in biotech, taught myself Java, never looked back. These days I think in <b>Spring Boot, message queues and pipelines</b>. Currently adding Kafka, Angular and React — a backend engineer should know where the JSON goes after it leaves.</p>
+    <div class="stats">
+      <div class="stat"><b data-n="4" data-s="+">0</b><span>years in production</span></div>
+      <div class="stat"><b data-n="99.9" data-s="%">0</b><span>message reliability</span></div>
+      <div class="stat"><b data-n="70" data-s="%">0</b><span>faster deployments</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <h2 class="decode">Experience</h2>
+  <div class="tl reveal">
+    <div class="tl-item">
+      <h3>Backend Developer — Tata Consultancy Services</h3>
+      <div class="when">May 2022 → present · Chennai</div>
+      <ul>
+        <li>Rebuilt a stored-procedure-heavy legacy system as Spring Boot REST microservices. The old version needed a tribal elder to maintain; the new one doesn't.</li>
+        <li>Run an IBM MQ batch platform that's held 99.9% message reliability since go-live.</li>
+        <li>Built the JWT/OAuth gateway every external vendor request passes through. One door, properly locked.</li>
+        <li>Rewired CI/CD with Tekton and Harness — releases went from hours to minutes.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <h2 class="decode">Projects</h2>
+  <div class="grid reveal">
+    <div class="card"><div class="glare"></div>
+      <h3>Balance Control</h3>
+      <p>Real-time transaction earmarking service. Pulls from IBM MQ asynchronously, runs 24x7 on OpenShift, shrugs off traffic spikes. Zero manual intervention.</p>
+      <div class="tags"><span>Spring Boot</span><span>IBM MQ</span><span>OpenShift</span></div>
+    </div>
+    <div class="card"><div class="glare"></div>
+      <h3>Vendor Gateway</h3>
+      <p>The single secure entry point for all external API traffic. JWT bearer auth, Java 17 Records over JDBC — less boilerplate, easier debugging.</p>
+      <div class="tags"><span>Java 17</span><span>OAuth 2.0</span><span>JDBC</span></div>
+    </div>
+    <div class="card"><div class="glare"></div>
+      <h3>Transaction Batch Engine</h3>
+      <p>End-to-end banking transaction processing. JAXB-parsed XML from an upstream system that loved sending edge cases the spec never mentioned.</p>
+      <div class="tags"><span>Batch</span><span>JAXB</span><span>Harness</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <h2 class="decode">Skills</h2>
+  <div class="reveal">
+    <div class="skillrow"><b>[core]</b><div class="chips"><span>Java 8/17</span><span>Spring Boot</span><span>Spring Data JPA</span><span>REST APIs</span><span>Microservices</span></div></div>
+    <div class="skillrow"><b>[messaging]</b><div class="chips"><span>IBM MQ</span><span>Kafka</span><span>JMS</span><span>XML/JAXB</span></div></div>
+    <div class="skillrow"><b>[platform]</b><div class="chips"><span>Kubernetes (OpenShift)</span><span>Docker</span><span>Tekton</span><span>Harness</span><span>Azure</span></div></div>
+    <div class="skillrow"><b>[also]</b><div class="chips"><span>MS SQL</span><span>JUnit</span><span>Git</span><span>Angular</span><span>React</span></div></div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <h2 class="decode">Contact</h2>
+  <div class="reveal">
+    <p style="color:var(--muted);margin-bottom:16px">Hiring? Building something? Take the red pill —</p>
+    <a href="mailto:samsonarulsanthoshraj@gmail.com">samsonarulsanthoshraj@gmail.com</a>
+  </div>
+</section>
+
+<footer>built by hand · no frameworks were harmed · © 2026 santhosh raj</footer>
+</main>
+
+<script>
+const GLY='アイウエオカキクケコサシスセソタチツテト0123456789$#@%&ABCDEF';
+
+/* ===== layered matrix rain with mouse repulsion ===== */
+const cv=document.getElementById('matrix'),cx=cv.getContext('2d');
+let W,H,layers=[],mouse={x:-999,y:-999},rave=false;
+function init(){W=cv.width=innerWidth;H=cv.height=innerHeight;layers=[];
+  [{f:11,sp:.4,a:.10},{f:15,sp:.7,a:.20},{f:19,sp:1.1,a:.34}].forEach(L=>{
+    const n=Math.floor(W/L.f);
+    layers.push({...L,drops:Array.from({length:n},()=>Math.random()*H/L.f),
+      offs:Array(n).fill(0)});});}
+init();addEventListener('resize',init);
+addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+(function rain(){
+  cx.fillStyle='rgba(3,8,3,0.10)';cx.fillRect(0,0,W,H);
+  layers.forEach(L=>{
+    cx.font=L.f+'px monospace';
+    L.drops.forEach((y,i)=>{
+      const px=i*L.f,py=y*L.f;
+      /* repulsion: columns bend away from cursor */
+      const dx=px-mouse.x,dy=py-mouse.y,d=Math.hypot(dx,dy);
+      L.offs[i]+= (d<130?(dx/d)*((130-d)/130)*6:0 - L.offs[i]*.08);
+      const head=Math.random()<.012;
+      cx.fillStyle=head?'#d6ffe8':`rgba(0,255,127,${rave?L.a*2.4:L.a})`;
+      cx.fillText(GLY[Math.random()*GLY.length|0],px+L.offs[i],py);
+      L.drops[i]=py>H&&Math.random()>0.975?0:y+L.sp;});});
+  requestAnimationFrame(rain);})();
+
+/* ===== custom cursor ===== */
+const cur=document.querySelector('.cur'),ring=document.querySelector('.ring');
+let rx=0,ry=0;
+addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+(function follow(){rx+=(mouse.x-rx)*.16;ry+=(mouse.y-ry)*.16;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(follow);})();
+document.querySelectorAll('a,button,.chips span').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('on'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('on'));});
+
+/* ===== click glyph burst ===== */
+addEventListener('click',e=>{for(let i=0;i<10;i++){
+  const s=document.createElement('span');s.textContent=GLY[Math.random()*GLY.length|0];
+  Object.assign(s.style,{position:'fixed',left:e.clientX+'px',top:e.clientY+'px',color:'#00ff7f',
+    fontFamily:'monospace',fontSize:'13px',zIndex:997,pointerEvents:'none',textShadow:'0 0 8px #00ff7f'});
+  document.body.appendChild(s);
+  const a=Math.random()*Math.PI*2,v=40+Math.random()*70;
+  s.animate([{transform:'translate(0,0)',opacity:1},
+    {transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v}px)`,opacity:0}],
+    {duration:600+Math.random()*300,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>s.remove();}});
+
+/* ===== typing loop ===== */
+const lines=['Java · Spring Boot · Microservices','99.9% uptime is a lifestyle.','IBM MQ whisperer. Kafka curious.','Follow the white rabbit → projects'];
+const t=document.getElementById('typed');let li=0,ci=0,del=false;
+(function type(){const s=lines[li];t.textContent=s.slice(0,ci);
+  if(!del&&ci<s.length){ci++;setTimeout(type,55);}
+  else if(!del){del=true;setTimeout(type,1700);}
+  else if(ci>0){ci--;setTimeout(type,26);}
+  else{del=false;li=(li+1)%lines.length;setTimeout(type,350);}})();
+
+/* ===== decode headings on scroll ===== */
+function decode(el){const target=el.dataset.txt||(el.dataset.txt=el.textContent);let f=0;
+  (function tick(){el.textContent=target.split('').map((c,i)=>
+    i<f?c:GLY[Math.random()*GLY.length|0]).join('');
+    if(f<=target.length){f+=.5;setTimeout(tick,28);}})();}
+const dio=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting&&!e.target.done){e.target.done=true;decode(e.target);}}),{threshold:.6});
+document.querySelectorAll('.decode').forEach(h=>dio.observe(h));
+
+/* ===== reveal + counters ===== */
+const rio=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('show')),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(s=>rio.observe(s));
+const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting||e.target.done)return;
+  e.target.done=true;const end=+e.target.dataset.n,s=e.target.dataset.s,dec=end%1?1:0;let c=0;
+  (function st(){c+=end/45;e.target.textContent=(c>=end?end.toFixed(dec):c.toFixed(dec))+s;
+    if(c<end)requestAnimationFrame(st);})();}),{threshold:.6});
+document.querySelectorAll('.stat b').forEach(b=>cio.observe(b));
+
+/* ===== scroll progress ===== */
+addEventListener('scroll',()=>{const h=document.documentElement;
+  document.getElementById('bar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+
+/* ===== magnetic buttons ===== */
+document.querySelectorAll('.magnetic').forEach(b=>{
+  b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();
+    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.25}px,${(e.clientY-r.top-r.height/2)*.35}px)`;});
+  b.addEventListener('mouseleave',()=>b.style.transform='');});
+
+/* ===== card tilt + glare ===== */
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),
+    x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    c.style.transform=`perspective(700px) rotateY(${(x-.5)*10}deg) rotateX(${(.5-y)*10}deg)`;
+    c.style.setProperty('--gx',x*100+'%');c.style.setProperty('--gy',y*100+'%');});
+  c.addEventListener('mouseleave',()=>c.style.transform='');});
+
+/* ===== easter eggs: M = rave, type "neo" = wake up ===== */
+let buf='';
+addEventListener('keydown',e=>{
+  if(e.key.toLowerCase()==='m')rave=!rave;
+  buf=(buf+e.key.toLowerCase()).slice(-3);
+  if(buf==='neo'){const w=document.getElementById('wake');w.classList.add('on');w.textContent='';
+    const msg='Wake up, recruiter...\nThe résumé has you.\nFollow the green glyphs. 🐇';
+    let i=0;(function tw(){if(i<=msg.length){w.textContent=msg.slice(0,i++);setTimeout(tw,60);}
+      else setTimeout(()=>w.classList.remove('on'),2200);})();}});
+</script>
+</body>
+</html>
