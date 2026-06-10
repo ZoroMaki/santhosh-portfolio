@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santhosh Raj — Full Stack Software Developer</title>
+<meta name="description" content="Full stack software developer. Java, Spring Boot, Angular, React. I build systems that don't go down.">
+<meta property="og:title" content="Santhosh Raj — Full Stack Software Developer">
+<meta property="og:description" content="Java · Spring Boot · Angular · React · follow the white rabbit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=VT323&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23030803'/><text y='78' x='20' font-size='75' fill='%2300ff7f' font-family='monospace'>S</text></svg>">
+<style>
+  :root{
+    --bg:#030803; --panel:#08110899; --green:#00ff7f; --green2:#00c060; --amber:#ffb000;
+    --text:#dceadc; --muted:#84997e; --border:#162a16;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue","Inter",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+    --term:"VT323","JetBrains Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;overflow-x:hidden;cursor:none}
+  a,button{cursor:none}
+  @media(pointer:coarse){body,a,button{cursor:auto}.cur,.ring{display:none}}
+  canvas#matrix{position:fixed;inset:0;z-index:0}
+  main{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:0 24px}
+
+  .cur{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--green);z-index:999;pointer-events:none;
+    transform:translate(-50%,-50%);box-shadow:0 0 14px var(--green)}
+  .ring{position:fixed;width:34px;height:34px;border-radius:50%;border:1px solid var(--green2);z-index:998;
+    pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,border-color .25s}
+  .ring.on{width:58px;height:58px;border-color:var(--green)}
+
+  #bar{position:fixed;top:0;left:0;height:2px;background:var(--green);width:0;z-index:99;box-shadow:0 0 12px var(--green)}
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;
+    padding:15px 30px;backdrop-filter:blur(16px);background:#03080388;border-bottom:1px solid var(--border)}
+  nav .logo{color:var(--green);font-weight:800;font-family:var(--mono);letter-spacing:2px}
+  nav a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:13px;font-family:var(--mono)}
+  nav a:hover{color:var(--green);text-shadow:0 0 12px var(--green)}
+
+  header{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+  .prompt{font-family:var(--term);color:var(--green2);font-size:19px;margin-bottom:14px}
+  .prompt::before{content:"➜ ";color:var(--green)}
+  h1{font-size:clamp(40px,7.6vw,80px);font-weight:800;letter-spacing:-2.5px;line-height:1.02}
+  .glitch{position:relative;display:inline-block;color:var(--green);text-shadow:0 0 30px #00ff7f44}
+  .glitch::before,.glitch::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;overflow:hidden}
+  .glitch::before{color:#0ff;z-index:-1;animation:gl1 3.5s infinite steps(1)}
+  .glitch::after{color:#f0f;z-index:-2;animation:gl2 3.5s infinite steps(1)}
+  @keyframes gl1{0%,93%{clip-path:inset(0 0 100% 0)}94%{clip-path:inset(10% 0 60% 0);transform:translate(-4px,-2px)}
+    96%{clip-path:inset(60% 0 10% 0);transform:translate(4px,2px)}98%,100%{clip-path:inset(0 0 100% 0);transform:none}}
+  @keyframes gl2{0%,93%{clip-path:inset(0 0 100% 0)}95%{clip-path:inset(40% 0 30% 0);transform:translate(5px,1px)}
+    97%{clip-path:inset(5% 0 80% 0);transform:translate(-5px,-1px)}99%,100%{clip-path:inset(0 0 100% 0);transform:none}}
+  .role-line{font-size:clamp(17px,2.6vw,24px);font-weight:600;margin-top:10px;color:var(--text)}
+  .role-line em{font-style:normal;color:var(--amber)}
+  #typed{font-family:var(--term);color:var(--muted);font-size:clamp(18px,2.8vw,23px);margin-top:14px;min-height:1.6em}
+  #typed::after{content:"▋";color:var(--green);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .cta{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{padding:12px 24px;border:1px solid var(--green);border-radius:12px;color:var(--green);text-decoration:none;
+    font-size:14px;font-weight:600;background:transparent;position:relative;overflow:hidden;transition:color .3s,box-shadow .3s}
+  .btn::before{content:"";position:absolute;inset:0;background:var(--green);transform:translateY(101%);transition:transform .3s;z-index:-1}
+  .btn:hover{color:#031003;box-shadow:0 0 36px #00ff7f55}
+  .btn:hover::before{transform:none}
+  .btn.ghost{border-color:var(--border);color:var(--muted)}
+  .btn.ghost::before{background:#0d1f0d}
+  .btn.ghost:hover{color:var(--green);border-color:var(--green);box-shadow:none}
+  .hint{margin-top:48px;font-size:16px;color:#314531;font-family:var(--term)}
+
+  section{padding:96px 0}
+  h2{font-family:var(--mono);font-size:14px;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:34px;min-height:1.4em}
+  h2::before{content:"// "}
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .7s,transform .7s}
+  .reveal.show{opacity:1;transform:none}
+  .about p{font-size:17px;max-width:680px;margin-bottom:14px}
+  .about b{color:var(--green);font-weight:600}
+  .stats{display:flex;gap:44px;margin-top:36px;flex-wrap:wrap}
+  .stat b{display:block;font-size:38px;color:var(--green);font-weight:800}
+  .stat span{font-size:13px;color:var(--muted)}
+
+  .tl{border-left:1px solid var(--border);padding-left:30px}
+  .tl-item{position:relative;margin-bottom:40px}
+  .tl-item::before{content:"";position:absolute;left:-35px;top:9px;width:9px;height:9px;border-radius:50%;
+    background:var(--green);box-shadow:0 0 14px var(--green)}
+  .tl-item h3{font-size:20px;font-weight:700}
+  .tl-item .when{font-size:13px;color:var(--green2);font-family:var(--mono);margin:3px 0 12px}
+  .tl-item li{color:var(--muted);font-size:15px;margin:8px 0 8px 18px}
+  .tl-item li::marker{color:var(--green)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;position:relative;
+    overflow:hidden;backdrop-filter:blur(6px);transition:.3s;transform-style:preserve-3d}
+  .card:hover{border-color:var(--green);box-shadow:0 0 44px #00ff7f22}
+  .card .glare{position:absolute;inset:0;background:radial-gradient(420px circle at var(--gx,50%) var(--gy,50%),#00ff7f14,transparent 45%);pointer-events:none}
+  .card h3{font-size:18px;font-weight:700;margin-bottom:9px}
+  .card h3::before{content:"▸ ";color:var(--green)}
+  .card p{font-size:14px;color:var(--muted);margin-bottom:16px}
+  .card .open{font-family:var(--term);font-size:15px;color:var(--green2)}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+  .tags span{font-size:11px;font-family:var(--mono);color:var(--green);border:1px solid var(--border);padding:3px 10px;border-radius:99px}
+
+  /* modal */
+  #overlay{position:fixed;inset:0;z-index:300;background:#000000d9;backdrop-filter:blur(8px);display:none;
+    align-items:center;justify-content:center;padding:20px}
+  #overlay.on{display:flex}
+  #modal{width:min(640px,94vw);background:#061106;border:1px solid var(--green);border-radius:16px;
+    box-shadow:0 0 80px #00ff7f33;overflow:hidden;animation:popin .35s cubic-bezier(.2,1.2,.3,1)}
+  @keyframes popin{from{transform:scale(.85) translateY(30px);opacity:0}to{transform:none;opacity:1}}
+  #modal .mhead{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#0a1c0c;
+    border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;color:var(--green)}
+  #mclose{background:none;border:1px solid var(--green);color:var(--green);font-family:var(--mono);padding:2px 10px;border-radius:6px}
+  #mclose:hover{background:var(--green);color:#031003}
+  #mbody{padding:24px 26px;font-size:15px}
+  #mbody .term{font-family:var(--term);font-size:18px;color:var(--green2);white-space:pre-wrap;min-height:4.5em}
+  #mbody .detail{display:none}
+  #mbody .detail.on{display:block;animation:fadein .4s}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  #mbody h4{font-size:20px;color:var(--green);margin-bottom:10px;font-weight:700}
+  #mbody li{margin:7px 0 7px 18px;color:var(--muted);font-size:14px}
+  #mbody li::marker{color:var(--green)}
+  .mmetrics{display:flex;gap:26px;margin-top:18px;flex-wrap:wrap}
+  .mmetrics div{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .mmetrics b{display:block;font-size:22px;color:var(--green)}
+  body.flash::after{content:"";position:fixed;inset:0;background:var(--green);z-index:299;opacity:.18;animation:fl .25s forwards;pointer-events:none}
+  @keyframes fl{to{opacity:0}}
+
+  /* full-stack flip switcher */
+  .stackswitch{display:flex;gap:0;margin-bottom:26px;border:1px solid var(--border);border-radius:12px;
+    overflow:hidden;width:fit-content;font-family:var(--mono);font-size:13px}
+  .stackswitch button{background:transparent;border:none;color:var(--muted);padding:10px 26px;font-family:var(--mono);
+    font-size:13px;transition:.25s}
+  .stackswitch button.act{background:var(--green);color:#031003;font-weight:700}
+  .flip{perspective:1200px}
+  .flipinner{transition:transform .6s cubic-bezier(.4,.1,.2,1);transform-style:preserve-3d;position:relative}
+  .flip.fe .flipinner{transform:rotateY(180deg)}
+  .face{backface-visibility:hidden}
+  .face.back{position:absolute;inset:0;transform:rotateY(180deg)}
+  .skillrow{margin-bottom:18px}
+  .skillrow b{font-size:13px;font-family:var(--mono);color:var(--green2);display:block;margin-bottom:9px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips span{padding:7px 15px;background:var(--panel);border:1px solid var(--border);border-radius:11px;font-size:13px;transition:.2s}
+  .chips span:hover{border-color:var(--green);color:var(--green);transform:translateY(-4px)}
+  .chips span.lvl{border-style:dashed;color:var(--amber)}
+
+  /* contact terminal */
+  .termbox{background:#04100a;border:1px solid var(--green);border-radius:16px;overflow:hidden;
+    box-shadow:0 0 50px #00ff7f1a;max-width:620px}
+  .thead{padding:10px 16px;background:#0a1c0c;border-bottom:1px solid var(--border);font-family:var(--mono);
+    font-size:12px;color:var(--green2);display:flex;gap:8px;align-items:center}
+  .thead i{width:10px;height:10px;border-radius:50%}
+  .thead i:nth-child(1){background:#ff5f56}.thead i:nth-child(2){background:#ffbd2e}.thead i:nth-child(3){background:#27c93f}
+  .tbody{padding:22px 24px}
+  #conlog{white-space:pre-wrap;color:var(--green2);min-height:4.5em;font-family:var(--term);font-size:18px}
+  .conrow{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap;font-family:var(--mono)}
+  .conrow .lbl{color:var(--muted);font-size:12px;min-width:60px}
+  .conrow .val{color:var(--green);font-size:15px}
+  .copy{background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--mono);font-size:11px;
+    padding:4px 12px;border-radius:8px;transition:.2s}
+  .copy:hover{border-color:var(--green);color:var(--green)}
+  .sendbtn{margin-top:22px;width:100%;padding:14px;background:var(--green);color:#031003;border:none;font-weight:800;
+    font-size:15px;border-radius:10px;transition:.2s;font-family:var(--sans)}
+  .sendbtn:hover{box-shadow:0 0 40px #00ff7f66;transform:translateY(-2px)}
+  .sendbtn.sending{pointer-events:none;background:#0a3a1a;color:var(--green)}
+
+  /* ===== GIFT SYSTEM ===== */
+  #giftlay{position:fixed;inset:0;z-index:400;background:#000000cc;backdrop-filter:blur(6px);display:none;
+    align-items:center;justify-content:center}
+  #giftlay.on{display:flex}
+  #giftbox{text-align:center}
+  #giftbox .box{font-size:90px;display:inline-block;animation:wiggle 1s infinite;filter:drop-shadow(0 0 24px #00ff7f)}
+  @keyframes wiggle{0%,100%{transform:rotate(-6deg) scale(1)}50%{transform:rotate(6deg) scale(1.08)}}
+  #giftbox .tap{font-family:var(--term);color:var(--green);font-size:20px;margin-top:14px;animation:blink 1.4s steps(1) infinite}
+  #giftcard{display:none;background:#061106;border:1px solid var(--green);border-radius:18px;padding:38px 34px;
+    max-width:430px;box-shadow:0 0 90px #00ff7f44;animation:popin .45s cubic-bezier(.2,1.4,.3,1)}
+  #giftcard.on{display:block}
+  #giftcard .big{font-size:44px;margin-bottom:10px}
+  #giftcard h3{font-size:22px;color:var(--green);margin-bottom:10px;font-weight:800}
+  #giftcard p{color:var(--muted);font-size:15px;margin-bottom:18px}
+  #giftcard .coupon{border:2px dashed var(--amber);border-radius:12px;padding:14px;font-family:var(--mono);
+    color:var(--amber);font-size:13px;margin-bottom:20px;background:#1a120033}
+  #giftcard .coupon b{font-size:16px;letter-spacing:2px}
+  #giftcard button{background:var(--green);color:#031003;border:none;padding:11px 30px;border-radius:10px;
+    font-weight:800;font-size:14px;font-family:var(--sans)}
+  #giftcard button:hover{box-shadow:0 0 30px #00ff7f66}
+
+  #toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,80px);z-index:500;background:#061106;
+    border:1px solid var(--green);color:var(--green);font-family:var(--mono);font-size:13px;padding:11px 22px;
+    border-radius:10px;transition:transform .35s cubic-bezier(.2,1.2,.3,1);box-shadow:0 0 30px #00ff7f33}
+  #toast.on{transform:translate(-50%,0)}
+  #rabbit{position:fixed;bottom:-60px;left:-60px;font-size:30px;z-index:200;filter:drop-shadow(0 0 8px #00ff7f);user-select:none}
+  footer{padding:44px 0;text-align:center;color:#314531;font-size:16px;font-family:var(--term)}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="cur"></div><div class="ring"></div>
+<div id="bar"></div>
+<div id="toast">copied ✓</div>
+<div id="rabbit" title="follow me">🐇</div>
+
+<nav>
+  <div class="logo">SR_</div>
+  <div><a href="#about">about</a><a href="#work">work</a><a href="#projects">projects</a>
+    <a href="#stack">stack</a><a href="#contact">contact</a></div>
+</nav>
+
+<main>
+<header>
+  <div class="prompt">~/santhosh $ whoami</div>
+  <h1><span class="glitch" data-t="SANTHOSH RAJ">SANTHOSH RAJ</span></h1>
+  <div class="role-line">Full Stack Software Developer — <em>backend depth, frontend reach.</em></div>
+  <div id="typed"></div>
+  <div class="cta">
+    <a class="btn magnetic" href="resume.pdf" download="Santhosh_Raj_Resume.pdf">⬇ Resume</a>
+    <a class="btn magnetic ghost" href="https://github.com/ZoroMaki" target="_blank">GitHub</a>
+    <a class="btn magnetic ghost" href="https://linkedin.com/in/thesanthoshraj" target="_blank">LinkedIn</a>
+  </div>
+  <div class="hint">press M for rave mode · click the cards · contact me for a surprise 🎁</div>
+</header>
+
+<section id="about" class="about">
+  <h2 class="decode">About</h2>
+  <div class="reveal">
+    <p>I'm a full stack developer at <b>TCS</b>, four years deep into banking systems for a top-5 US bank. Backend is my home turf — <b>Java, Spring Boot, message queues</b> — and I'm extending across the stack with <b>Angular and React</b>, because owning a feature end to end beats owning half of it.</p>
+    <p>Started in biotech, taught myself Java, never looked back. My job is making money-moving software boring: no surprises, no downtime, no 2am calls.</p>
+    <div class="stats">
+      <div class="stat"><b data-n="4" data-s="+">0</b><span>years in production</span></div>
+      <div class="stat"><b data-n="99.9" data-s="%">0</b><span>message reliability</span></div>
+      <div class="stat"><b data-n="70" data-s="%">0</b><span>faster deployments</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <h2 class="decode">Experience</h2>
+  <div class="tl reveal">
+    <div class="tl-item">
+      <h3>Backend Developer — Tata Consultancy Services</h3>
+      <div class="when">May 2022 → present · Chennai</div>
+      <ul>
+        <li>Rebuilt a stored-procedure-heavy legacy system as Spring Boot REST microservices.</li>
+        <li>Run an IBM MQ batch platform holding 99.9% message reliability since go-live.</li>
+        <li>Built the JWT/OAuth gateway every external vendor request passes through.</li>
+        <li>Rewired CI/CD with Tekton and Harness — releases went from hours to minutes.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <h2 class="decode">Projects</h2>
+  <div class="grid reveal">
+    <div class="card" data-p="0"><div class="glare"></div>
+      <h3>Balance Control</h3>
+      <p>Real-time transaction earmarking on IBM MQ. Runs 24x7 on OpenShift, shrugs off traffic spikes.</p>
+      <div class="tags"><span>Spring Boot</span><span>IBM MQ</span><span>OpenShift</span></div>
+      <span class="open">[ click to open case file ]</span></div>
+    <div class="card" data-p="1"><div class="glare"></div>
+      <h3>Vendor Gateway</h3>
+      <p>The single secure entry point for all external API traffic. JWT bearer auth, Java 17 Records.</p>
+      <div class="tags"><span>Java 17</span><span>OAuth 2.0</span><span>JDBC</span></div>
+      <span class="open">[ click to open case file ]</span></div>
+    <div class="card" data-p="2"><div class="glare"></div>
+      <h3>Transaction Batch Engine</h3>
+      <p>End-to-end banking transaction processing with JAXB-parsed XML from external systems.</p>
+      <div class="tags"><span>Batch</span><span>JAXB</span><span>Harness</span></div>
+      <span class="open">[ click to open case file ]</span></div>
+  </div>
+</section>
+
+<section id="stack">
+  <h2 class="decode">Full Stack</h2>
+  <div class="reveal">
+    <div class="stackswitch">
+      <button id="swBE" class="act">⚙ BACKEND</button>
+      <button id="swFE">✦ FRONTEND</button>
+    </div>
+    <div class="flip" id="flip"><div class="flipinner" id="flipinner">
+      <div class="face front">
+        <div class="skillrow"><b>[core]</b><div class="chips"><span>Java 8/17</span><span>Spring Boot</span><span>Spring Data JPA</span><span>REST APIs</span><span>Microservices</span></div></div>
+        <div class="skillrow"><b>[messaging]</b><div class="chips"><span>IBM MQ</span><span>Kafka</span><span>JMS</span><span>XML/JAXB</span></div></div>
+        <div class="skillrow"><b>[platform]</b><div class="chips"><span>Kubernetes (OpenShift)</span><span>Docker</span><span>Tekton</span><span>Harness</span><span>Azure</span></div></div>
+        <div class="skillrow"><b>[data]</b><div class="chips"><span>MS SQL</span><span>JDBC</span><span>JUnit</span><span>Git</span></div></div>
+      </div>
+      <div class="face back">
+        <div class="skillrow"><b>[frameworks]</b><div class="chips"><span>Angular</span><span>React</span><span class="lvl">leveling up daily</span></div></div>
+        <div class="skillrow"><b>[languages]</b><div class="chips"><span>JavaScript</span><span>TypeScript</span><span>HTML/CSS</span></div></div>
+        <div class="skillrow"><b>[proof]</b><div class="chips"><span>this site — vanilla JS, zero frameworks</span></div></div>
+        <div class="skillrow"><b>[next]</b><div class="chips"><span class="lvl">Next.js</span><span class="lvl">Tailwind</span></div></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 class="decode">Contact</h2>
+  <div class="reveal">
+    <div class="termbox">
+      <div class="thead"><i></i><i></i><i></i>&nbsp;secure-channel — santhosh@reachable:~$</div>
+      <div class="tbody">
+        <div id="conlog">$ ./initiate_contact.sh --target santhosh</div>
+        <div class="conrow"><span class="lbl">email</span><span class="val">samsonarulsanthoshraj@gmail.com</span>
+          <button class="copy" data-c="samsonarulsanthoshraj@gmail.com">copy</button></div>
+        <div class="conrow"><span class="lbl">phone</span><span class="val">+91 87782 05648</span>
+          <button class="copy" data-c="+918778205648">copy</button></div>
+        <button class="sendbtn" id="send">▶ TRANSMIT VIA GMAIL</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>built by hand · no frameworks were harmed · © 2026 santhosh raj</footer>
+</main>
+
+<div id="overlay"><div id="modal">
+  <div class="mhead"><b id="mtitle">CASE FILE</b><button id="mclose">✕ ESC</button></div>
+  <div id="mbody"><div class="term" id="mterm"></div><div class="detail" id="mdetail"></div></div>
+</div></div>
+
+<div id="giftlay">
+  <div id="giftbox"><span class="box">🎁</span><div class="tap">[ click the gift to open ]</div></div>
+  <div id="giftcard">
+    <div class="big">🎉</div>
+    <h3 id="gifttitle">You just made my day!</h3>
+    <p id="giftmsg">Most people scroll past. You reached out — and that means a lot. Good things happen to people who take action. 💚</p>
+    <div class="coupon">COUPON · <b>FREE-COFFEE-001</b><br>redeemable at our first interview ☕<br>(yes, I'm serious — remind me)</div>
+    <button id="giftok">Keep the luck ✓</button>
+  </div>
+</div>
+
+<script>
+const GLY='アイウエオカキクケコサシスセソタチツテト0123456789$#@%&ABCDEF';
+
+/* ===== matrix rain — slowed down ===== */
+const cv=document.getElementById('matrix'),cx=cv.getContext('2d');
+let W,H,layers=[],mouse={x:-999,y:-999},rave=false;
+function init(){W=cv.width=innerWidth;H=cv.height=innerHeight;layers=[];
+  [{f:11,sp:.18,a:.09},{f:15,sp:.32,a:.18},{f:19,sp:.5,a:.30}].forEach(L=>{
+    const n=Math.floor(W/L.f);
+    layers.push({...L,drops:Array.from({length:n},()=>Math.random()*H/L.f),offs:Array(n).fill(0)});});}
+init();addEventListener('resize',init);
+addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+let last=0;
+(function rain(ts){requestAnimationFrame(rain);
+  if(ts-last<40)return;last=ts;            /* throttled: calmer, slower flow */
+  cx.fillStyle='rgba(3,8,3,0.08)';cx.fillRect(0,0,W,H);
+  layers.forEach(L=>{cx.font=L.f+'px monospace';
+    L.drops.forEach((y,i)=>{const px=i*L.f,py=y*L.f;
+      const dx=px-mouse.x,dy=py-mouse.y,d=Math.hypot(dx,dy)||1;
+      L.offs[i]+=(d<130?(dx/d)*((130-d)/130)*6:0)-L.offs[i]*.08;
+      cx.fillStyle=Math.random()<.012?'#d6ffe8':`rgba(0,255,127,${rave?L.a*2.4:L.a})`;
+      cx.fillText(GLY[Math.random()*GLY.length|0],px+L.offs[i],py);
+      L.drops[i]=py>H&&Math.random()>0.975?0:y+L.sp;});});})(0);
+
+/* ===== cursor ===== */
+const cur=document.querySelector('.cur'),ring=document.querySelector('.ring');let rx=0,ry=0;
+addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+(function follow(){rx+=(mouse.x-rx)*.16;ry+=(mouse.y-ry)*.16;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(follow);})();
+function bindHover(){document.querySelectorAll('a,button,.chips span,.card').forEach(el=>{
+  el.onmouseenter=()=>ring.classList.add('on');el.onmouseleave=()=>ring.classList.remove('on');});}
+bindHover();
+
+/* ===== glyph burst ===== */
+function burst(x,y,chars,count){for(let i=0;i<count;i++){
+  const s=document.createElement('span');s.textContent=chars[Math.random()*chars.length|0];
+  Object.assign(s.style,{position:'fixed',left:x+'px',top:y+'px',zIndex:997,pointerEvents:'none',
+    fontSize:(12+Math.random()*14)+'px',color:'#00ff7f',textShadow:'0 0 8px #00ff7f'});
+  document.body.appendChild(s);
+  const a=Math.random()*Math.PI*2,v=50+Math.random()*120;
+  s.animate([{transform:'translate(0,0) rotate(0)',opacity:1},
+    {transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+60}px) rotate(${Math.random()*360}deg)`,opacity:0}],
+    {duration:900+Math.random()*500,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>s.remove();}}
+addEventListener('click',e=>burst(e.clientX,e.clientY,GLY,8));
+
+/* ===== confetti (emoji shower from top) ===== */
+function confetti(){const ems=['🎉','💚','✨','🎊','⭐','🍀'];
+  for(let i=0;i<70;i++){const s=document.createElement('span');
+    s.textContent=ems[Math.random()*ems.length|0];
+    Object.assign(s.style,{position:'fixed',left:Math.random()*100+'vw',top:'-40px',zIndex:401,
+      pointerEvents:'none',fontSize:(14+Math.random()*22)+'px'});
+    document.body.appendChild(s);
+    s.animate([{transform:'translateY(0) rotate(0)',opacity:1},
+      {transform:`translateY(${innerHeight+80}px) rotate(${Math.random()*720-360}deg)`,opacity:.9}],
+      {duration:2200+Math.random()*1800,easing:'cubic-bezier(.3,.4,.6,1)',delay:Math.random()*600})
+      .onfinish=()=>s.remove();}}
+
+/* ===== typing ===== */
+const lines=['Backend depth: Java · Spring Boot · MQ','Frontend reach: Angular · React','99.9% uptime is a lifestyle.','Contact me — there\'s a gift in it 🎁'];
+const t=document.getElementById('typed');let li=0,ci=0,del=false;
+(function type(){const s=lines[li];t.textContent=s.slice(0,ci);
+  if(!del&&ci<s.length){ci++;setTimeout(type,55);}else if(!del){del=true;setTimeout(type,1700);}
+  else if(ci>0){ci--;setTimeout(type,26);}else{del=false;li=(li+1)%lines.length;setTimeout(type,350);}})();
+
+/* ===== decode / reveal / counters / progress ===== */
+function decode(el){const tg=el.dataset.txt||(el.dataset.txt=el.textContent);let f=0;
+  (function tick(){el.textContent=tg.split('').map((c,i)=>i<f?c:GLY[Math.random()*GLY.length|0]).join('');
+    if(f<=tg.length){f+=.5;setTimeout(tick,28);}})();}
+const dio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!e.target.done){e.target.done=true;decode(e.target);}}),{threshold:.6});
+document.querySelectorAll('.decode').forEach(h=>dio.observe(h));
+const rio=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('show')),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(s=>rio.observe(s));
+const cio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting||e.target.done)return;
+  e.target.done=true;const end=+e.target.dataset.n,sf=e.target.dataset.s,dec=end%1?1:0;let c=0;
+  (function st(){c+=end/45;e.target.textContent=(c>=end?end.toFixed(dec):c.toFixed(dec))+sf;
+    if(c<end)requestAnimationFrame(st);})();}),{threshold:.6});
+document.querySelectorAll('.stat b').forEach(b=>cio.observe(b));
+addEventListener('scroll',()=>{const h=document.documentElement;
+  document.getElementById('bar').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';});
+
+/* ===== magnetic + tilt ===== */
+document.querySelectorAll('.magnetic').forEach(b=>{
+  b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();
+    b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.25}px,${(e.clientY-r.top-r.height/2)*.35}px)`;});
+  b.addEventListener('mouseleave',()=>b.style.transform='');});
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),
+    x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    c.style.transform=`perspective(700px) rotateY(${(x-.5)*10}deg) rotateX(${(.5-y)*10}deg)`;
+    c.style.setProperty('--gx',x*100+'%');c.style.setProperty('--gy',y*100+'%');});
+  c.addEventListener('mouseleave',()=>c.style.transform='');});
+
+/* ===== project modals ===== */
+const projects=[
+ {file:'BALANCE_CONTROL.case',boot:'> opening case file...\n> decrypting BALANCE_CONTROL.case ... OK\n> classification: PRODUCTION / 24x7\n',
+  html:`<h4>Balance Control — real-time earmarking</h4><ul>
+  <li>Spring Boot service consuming IBM MQ via JMSListener — fully asynchronous, non-blocking.</li>
+  <li>Deployed on OpenShift with load balancing and tuned pod autoscaling.</li>
+  <li>Handles traffic spikes with zero downtime; zero manual intervention since launch.</li></ul>
+  <div class="mmetrics"><div><b>24x7</b>runtime</div><div><b>99.9%</b>reliability</div><div><b>0</b>manual steps</div></div>`},
+ {file:'VENDOR_GATEWAY.case',boot:'> opening case file...\n> decrypting VENDOR_GATEWAY.case ... OK\n> classification: SECURITY-CRITICAL\n',
+  html:`<h4>Vendor Gateway — one door, properly locked</h4><ul>
+  <li>Single secure entry point for 100% of external vendor API traffic.</li>
+  <li>JWT bearer-token auth (OAuth 2.0) — only pre-approved vendors get through.</li>
+  <li>Java 17 Records over JDBC: less boilerplate, easier debugging.</li></ul>
+  <div class="mmetrics"><div><b>100%</b>traffic covered</div><div><b>0</b>breaches</div><div><b>Java 17</b>stack</div></div>`},
+ {file:'TXN_BATCH.case',boot:'> opening case file...\n> decrypting TXN_BATCH.case ... OK\n> classification: DATA PIPELINE\n',
+  html:`<h4>Transaction Batch Engine — end to end</h4><ul>
+  <li>Banking transaction lifecycles — creates, updates, status tracking via JDBC.</li>
+  <li>JAXB XML parsing that survived every undocumented edge case upstream invented.</li></ul>
+  <div class="mmetrics"><div><b>E2E</b>lifecycle</div><div><b>0</b>parse defects</div><div><b>2x</b>scope survived</div></div>`}];
+const overlay=document.getElementById('overlay'),mterm=document.getElementById('mterm'),
+  mdetail=document.getElementById('mdetail'),mtitle=document.getElementById('mtitle');
+document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>{
+  const p=projects[+c.dataset.p];
+  document.body.classList.remove('flash');void document.body.offsetWidth;document.body.classList.add('flash');
+  overlay.classList.add('on');mtitle.textContent=p.file;mdetail.classList.remove('on');mdetail.innerHTML=p.html;
+  let k=0;mterm.textContent='';
+  (function tw(){if(k<=p.boot.length){mterm.textContent=p.boot.slice(0,k++);setTimeout(tw,14);}
+    else mdetail.classList.add('on');})();bindHover();}));
+function closeM(){overlay.classList.remove('on')}
+document.getElementById('mclose').addEventListener('click',e=>{e.stopPropagation();closeM();});
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeM();});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeM();giftlay.classList.remove('on');}});
+
+/* ===== full-stack flip ===== */
+const flip=document.getElementById('flip'),swBE=document.getElementById('swBE'),swFE=document.getElementById('swFE');
+swBE.addEventListener('click',()=>{flip.classList.remove('fe');swBE.classList.add('act');swFE.classList.remove('act');});
+swFE.addEventListener('click',()=>{flip.classList.add('fe');swFE.classList.add('act');swBE.classList.remove('act');});
+
+/* ===== GIFT SYSTEM ===== */
+const giftlay=document.getElementById('giftlay'),giftbox=document.getElementById('giftbox'),
+  giftcard=document.getElementById('giftcard');
+let giftShown=false;
+function giveGift(title,msg){if(giftShown)return;giftShown=true;
+  giftlay.classList.add('on');giftbox.style.display='block';giftcard.classList.remove('on');
+  document.getElementById('gifttitle').textContent=title;
+  document.getElementById('giftmsg').textContent=msg;bindHover();}
+giftbox.addEventListener('click',()=>{giftbox.style.display='none';
+  giftcard.classList.add('on');confetti();});
+document.getElementById('giftok').addEventListener('click',()=>{giftlay.classList.remove('on');
+  setTimeout(()=>giftShown=false,30000);}); /* re-giftable after 30s */
+
+/* ===== contact: copy + gmail ===== */
+const toast=document.getElementById('toast');
+function showToast(m){toast.textContent=m;toast.classList.add('on');setTimeout(()=>toast.classList.remove('on'),1800);}
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',e=>{
+  navigator.clipboard.writeText(b.dataset.c).then(()=>{showToast('copied ✓');
+    burst(e.clientX,e.clientY,['💚','✨','🍀'],14);
+    setTimeout(()=>giveGift('You\'ve got great taste! 🍀',
+      'You just copied my contact — that tiny action might be the start of something great. Whatever you\'re building, I hope it ships clean and scales easy. 💚'),700);});}));
+document.getElementById('send').addEventListener('click',function(){
+  const log=document.getElementById('conlog');this.classList.add('sending');this.textContent='ESTABLISHING LINK...';
+  const seq=['$ ./initiate_contact.sh --target santhosh','> resolving host ............ OK',
+    '> handshake (TLS 1.3) ....... OK','> channel encrypted ......... OK','> opening Gmail ............. ▋'];
+  let i=0;log.textContent='';
+  const iv=setInterval(()=>{log.textContent=seq.slice(0,++i).join('\n');
+    if(i>=seq.length){clearInterval(iv);
+      window.open('https://mail.google.com/mail/?view=cm&fs=1&to=samsonarulsanthoshraj@gmail.com&su=Interview%20Request%20%E2%80%94%20found%20you%20via%20portfolio','_blank');
+      this.classList.remove('sending');this.textContent='▶ TRANSMIT VIA GMAIL';
+      setTimeout(()=>giveGift('You just made my day! 🎉',
+        'Most people scroll past. You reached out — and that says everything about you. I reply fast. Talk soon! 💚'),800);}},330);});
+
+/* ===== rabbit ===== */
+const rb=document.getElementById('rabbit');
+function hop(){const fromLeft=Math.random()>.5,y=60+Math.random()*40;
+  rb.style.transition='none';rb.style.bottom=y+'vh';
+  rb.style.left=fromLeft?'-60px':'calc(100vw + 60px)';rb.style.transform=fromLeft?'scaleX(-1)':'';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{rb.style.transition='left 8s linear';
+    rb.style.left=fromLeft?'calc(100vw + 60px)':'-60px';}));}
+setInterval(hop,16000);setTimeout(hop,5000);
+rb.addEventListener('click',()=>{showToast('good choice. 🐇');
+  document.getElementById('contact').scrollIntoView({behavior:'smooth'});});
+
+addEventListener('keydown',e=>{if(e.key.toLowerCase()==='m')rave=!rave;});
+</script>
+</body>
+</html>
