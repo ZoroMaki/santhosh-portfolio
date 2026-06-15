@@ -1,7 +1,26 @@
-let found = [];
-document.querySelectorAll('*').forEach(el => {
-  if (el.scrollWidth > 375) {
-    found.push({ tag: el.tagName, class: el.className, scrollWidth: el.scrollWidth, parent: el.parentElement?.className });
-  }
-});
-console.table(found);
+import { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+
+export function AppLayout() {
+  useEffect(() => {
+    const handler = (e: ErrorEvent) => alert(`Error: ${e.message}`);
+    const rejectionHandler = (e: PromiseRejectionEvent) => alert(`Error: ${e.reason}`);
+
+    window.addEventListener('error', handler);
+    window.addEventListener('unhandledrejection', rejectionHandler);
+
+    return () => {
+      window.removeEventListener('error', handler);
+      window.removeEventListener('unhandledrejection', rejectionHandler);
+    };
+  }, []);
+
+  return (
+    <div className="ui-viewport">
+      <div className="ui-viewport-body">
+        <Outlet />
+      </div>
+      <div className="ui-viewport-footer" />
+    </div>
+  );
+}
