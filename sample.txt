@@ -1,12 +1,7 @@
-function findWide(root = document.body, threshold = window.innerWidth) {
-  const results = [];
-  document.querySelectorAll('*').forEach(el => {
-    const w = el.scrollWidth;
-    if (w > threshold) {
-      results.push({ el, tag: el.tagName, class: el.className, scrollWidth: w });
-    }
-  });
-  return results;
-}
-console.log(window.innerWidth);
-console.table(findWide().map(r => ({ class: r.class, scrollWidth: r.scrollWidth })));
+let found = [];
+document.querySelectorAll('*').forEach(el => {
+  if (el.scrollWidth > 375) {
+    found.push({ tag: el.tagName, class: el.className, scrollWidth: el.scrollWidth, parent: el.parentElement?.className });
+  }
+});
+console.table(found);
