@@ -1,0 +1,12 @@
+function findWide(root = document.body, threshold = window.innerWidth) {
+  const results = [];
+  document.querySelectorAll('*').forEach(el => {
+    const w = el.scrollWidth;
+    if (w > threshold) {
+      results.push({ el, tag: el.tagName, class: el.className, scrollWidth: w });
+    }
+  });
+  return results;
+}
+console.log(window.innerWidth);
+console.table(findWide().map(r => ({ class: r.class, scrollWidth: r.scrollWidth })));
