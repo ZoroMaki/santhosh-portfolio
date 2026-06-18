@@ -1,37 +1,18 @@
-.ui-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.ui-modal {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  min-width: 300px;
-  max-width: 90%;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.ui-modal-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+.ui-grid input[type="radio"].main-radio--flagged {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  min-width: 14px;        /* prevents collapse from flex/reset rules */
+  min-height: 14px;
+  margin: 0;
+  padding: 0;
   border: none;
-  background: none;
-  font-size: 18px;
+  border-radius: 50%;
+  background-color: #d97706 !important;  /* temporary !important to confirm it paints */
+  vertical-align: middle;
   cursor: pointer;
-}
-
-.ui-modal-body {
-  margin: 12px 0 20px;
-}
-
-.ui-modal-footer {
-  text-align: right;
 }
