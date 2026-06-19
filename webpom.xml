@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ═══════════════════════════════════════════════════════
+         WEB MODULE — drrevenue-web
+         Produces: drrevenue-web.war
+         Contains: Spring MVC backend + React dist/ at web root
+         Deploys to: WAS 9.x at context path /iswdrrevenue
+         ═══════════════════════════════════════════════════════ -->
+
+    <parent>
+        <groupId>com.isw.drrevenue</groupId>
+        <artifactId>drrevenue</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../drrevenue/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>drrevenue-web</artifactId>
+    <packaging>war</packaging>
+    <name>DR Revenue :: Web (Spring MVC WAR)</name>
+
+    <dependencies>
+
+        <!-- ═══════════════════════════════════════════════════
+             PROVIDED SCOPE — WAS 9.x supplies these at runtime.
+             NEVER bundle these in the WAR — WAS will conflict.
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             SPRING — full suite matching existing lib versions
+             BOM in parent manages all spring-* versions to 5.3.18
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>
+        <!-- spring-jcl is included transitively via spring-core — no separate entry needed -->
+
+        <!-- ═══════════════════════════════════════════════════
+             PERSISTENCE
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-commons-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             DATABASE DRIVERS
+             ═══════════════════════════════════════════════════ -->
+        <!-- DB2 — install to .m2 first, see SETUP section below -->
+        <dependency>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>db2jcc</artifactId>
+        </dependency>
+
+        <!-- SQL Server legacy driver -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>sqljdbc4</artifactId>
+        </dependency>
+
+        <!-- jTDS2 (alternative SQL Server driver — keep if used) -->
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             JACKSON
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             LOGGING — log4j 1.x (matches existing jar)
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             JAXB / MAIL / VALIDATION
+             (Required on Java 11+ — removed from the JDK)
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             COMMONS
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             POI (Excel)
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             JSON
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             BYTE MANIPULATION (Hibernate runtime deps)
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             HIBERNATE INTERNAL DEPS
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             PDF
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             GROOVY
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════════
+             CUSTOM / INTERNAL JARS
+             Must be installed to local .m2 or Nexus first.
+             ═══════════════════════════════════════════════════ -->
+        <dependency>
+            <groupId>com.isw</groupId>
+            <artifactId>iswencryptutility</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>drrevenue-web</finalName>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+
+            <!-- ── WAR packaging ── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- Points to your existing WEB-INF/web.xml -->
+                    <webXml>${project.basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+
+                    <!-- web.xml already present — don't fail if it's missing via annotation scanning -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+
+                    <!-- Merge React dist/ into the WAR web root at build time -->
+                    <webResources>
+                        <resource>
+                            <!-- Path to Vite dist output from the frontend module -->
+                            <directory>
+                                ${project.basedir}/../drrevenue-frontend/dist
+                            </directory>
+                            <!-- Copies directly to WAR root (no prefix folder) -->
+                            <targetPath>/</targetPath>
+                            <filtering>false</filtering>
+                        </resource>
+                    </webResources>
+
+                    <!-- Exclude jars WAS 9.x already provides -->
+                    <packagingExcludes>
+                        WEB-INF/lib/javax.servlet-api-*.jar,
+                        WEB-INF/lib/jsp-api-*.jar,
+                        WEB-INF/lib/jta-*.jar
+                    </packagingExcludes>
+                </configuration>
+            </plugin>
+
+            <!-- ── Copy React dist BEFORE WAR packages (ensures dist/ is ready) ── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-frontend-dist</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.isw.drrevenue</groupId>
+                                    <artifactId>drrevenue-frontend</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <!-- Extracts dist/ from the frontend jar into target/frontend-dist -->
+                                    <outputDirectory>${project.build.directory}/frontend-dist</outputDirectory>
+                                    <includes>dist/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

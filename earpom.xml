@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ═══════════════════════════════════════════════════════
+         EAR MODULE — drrevenue-ear
+         Produces: drrevenue.ear
+         Contains: drrevenue-web.war wrapped for WAS 9.x
+         Context path: /iswdrrevenue (set in application.xml)
+         ═══════════════════════════════════════════════════════ -->
+
+    <parent>
+        <groupId>com.isw.drrevenue</groupId>
+        <artifactId>drrevenue</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../drrevenue/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>drrevenue-ear</artifactId>
+    <packaging>ear</packaging>
+    <name>DR Revenue :: EAR (WAS 9.x)</name>
+
+    <dependencies>
+        <!-- The WAR to wrap — must be built before this module -->
+        <dependency>
+            <groupId>com.isw.drrevenue</groupId>
+            <artifactId>drrevenue-web</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>drrevenue</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+
+                    <!-- Java EE 7 spec level (WAS 9.x = Java EE 7) -->
+                    <version>7</version>
+
+                    <!-- application.xml is generated; sets context-root to /iswdrrevenue -->
+                    <generateApplicationXml>true</generateApplicationXml>
+
+                    <modules>
+                        <webModule>
+                            <groupId>com.isw.drrevenue</groupId>
+                            <artifactId>drrevenue-web</artifactId>
+                            <!-- Context root: /iswdrrevenue
+                                 Same across local/dev/uat/prod -->
+                            <contextRoot>/iswdrrevenue</contextRoot>
+                            <!-- WAR filename inside the EAR -->
+                            <bundleFileName>drrevenue-web.war</bundleFileName>
+                        </webModule>
+                    </modules>
+
+                    <!-- EAR lib directory (for shared jars, if any) -->
+                    <!-- <defaultLibBundleDir>lib</defaultLibBundleDir> -->
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
