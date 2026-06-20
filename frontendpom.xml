@@ -7,25 +7,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.isw.drrevenue</groupId>
+        <groupId>citi.icg.isw</groupId>
         <artifactId>drrevenue</artifactId>
-        <version>1.0.0</version>
+        <version>3.0.0</version>
     </parent>
 
     <artifactId>drrevenue-frontend</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>DR Revenue :: Frontend (React/Vite)</name>
 
-    <dependencies/>
-
-    <!-- ═══════════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════
          OS PROFILES
-         Automatically detects Windows vs Linux/Mac and sets
-         the correct npm executable name.
-         ═══════════════════════════════════════════════════════ -->
+         Windows → npm.cmd
+         Linux (TeamCity) → /bin/sh -c npm
+         ═══════════════════════════════════════════════ -->
     <profiles>
 
-        <!-- Windows: npm is npm.cmd -->
         <profile>
             <id>windows</id>
             <activation>
@@ -33,99 +30,96 @@
                     <family>windows</family>
                 </os>
             </activation>
-            <properties>
-                <npm.executable>npm.cmd</npm.executable>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>npm-install</id>
+                                <phase>generate-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>npm.cmd</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm-build</id>
+                                <phase>process-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>npm.cmd</executable>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>build</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <environmentVariables>
+                                        <NODE_ENV>production</NODE_ENV>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
-        <!-- Linux / Mac: npm is just npm -->
         <profile>
-            <id>non-windows</id>
+            <id>linux</id>
             <activation>
                 <os>
-                    <family>!windows</family>
+                    <family>unix</family>
                 </os>
             </activation>
-            <properties>
-                <npm.executable>npm</npm.executable>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>npm-install</id>
+                                <phase>generate-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>/bin/sh</executable>
+                                    <arguments>
+                                        <argument>-c</argument>
+                                        <argument>npm install</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm-build</id>
+                                <phase>process-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>/bin/sh</executable>
+                                    <arguments>
+                                        <argument>-c</argument>
+                                        <argument>npm run build</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <environmentVariables>
+                                        <NODE_ENV>production</NODE_ENV>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
     </profiles>
-
-    <build>
-        <plugins>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-
-                    <!-- Step 1: npm install -->
-                    <execution>
-                        <id>npm-install</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${npm.executable}</executable>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                        </configuration>
-                    </execution>
-
-                    <!-- Step 2: npm run build (Vite → dist/) -->
-                    <execution>
-                        <id>npm-build</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${npm.executable}</executable>
-                            <arguments>
-                                <argument>run</argument>
-                                <argument>build</argument>
-                            </arguments>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <environmentVariables>
-                                <NODE_ENV>production</NODE_ENV>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
-            <!-- Attach dist/ output so drrevenue-web (app/) can pick it up -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dist-to-classes</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/dist</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/dist</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
 
 </project>
