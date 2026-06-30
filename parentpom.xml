@@ -12,18 +12,7 @@
          these without repeating <version> tags.
          ═══════════════════════════════════════════════════════ -->
 
-    <groupId>com.isw.drrevenue</groupId>
-    <artifactId>drrevenue</artifactId>
-    <version>1.0.0</version>
-    <packaging>pom</packaging>
-    <name>DR Revenue :: Parent</name>
-
-    <!-- ── Submodules (Maven builds in this order) ── -->
-    <modules>
-        <module>../drrevenue-frontend</module>
-        <module>../drrevenue-web</module>
-        <module>../drrevenue-ear</module>
-    </modules>
+    <groupId>citi.icg.isw</groupId><artifactId>drrevenue</artifactId><version>3.0.0</version><packaging>pom</packaging><name>DRRevenue Parent</name><modules><module>web</module><module>app</module><module>ear</module></modules>
 
     <!-- ═══════════════════════════════════════════════════════
          VERSION PROPERTIES

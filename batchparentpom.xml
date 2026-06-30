@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.citi.cmbtech.isw</groupId>
+  <artifactId>iswadrbatches-parent</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <!-- library modules (non-main) -->
+    <module>email</module>
+    <module>vo</module>
+    <module>util</module>
+    <module>sd</module>
+    <module>http</module>
+    <module>commondatasource</module>
+    <!-- batch modules (main) -->
+    <module>citiadr</module>
+    <module>gdn</module>
+    <module>oasistransmission</module>
+    <module>recon</module>
+    <module>salesdiscount</module>
+  </modules>
+
+  <properties>
+    <maven.compiler.release>11</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <shade.plugin.version>3.5.1</shade.plugin.version>
+
+    <!-- centralized versions (deduplicated, one per lib) -->
+    <spring.version>5.3.18</spring.version>
+    <jackson.version>2.3.3</jackson.version>
+    <poi.version>3.10-FINAL-20140208</poi.version>
+  </properties>
+
+  <!-- ===== Catalog: declare every dependency's VERSION once.
+             Children reference WITHOUT versions. Scope=provided set in children. ===== -->
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- ---------- internal library modules (these get BUNDLED) ---------- -->
+      <dependency>
+        <groupId>com.citi.cmbtech.isw</groupId><artifactId>email</artifactId><version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.citi.cmbtech.isw</groupId><artifactId>vo</artifactId><version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.citi.cmbtech.isw</groupId><artifactId>util</artifactId><version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.citi.cmbtech.isw</groupId><artifactId>sd</artifactId><version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.citi.cmbtech.isw</groupId><artifactId>http</artifactId><version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.citi.cmbtech.isw</groupId><artifactId>commondatasource</artifactId><version>${project.version}</version>
+      </dependency>
+
+      <!-- ---------- server-provided third-party (from Artifactory, NOT bundled) ---------- -->
+      <!-- Spring -->
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-core</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-beans</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-context</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-context-support</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-jdbc</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-orm</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-tx</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-aop</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-expression</artifactId><version>${spring.version}</version></dependency>
+
+      <!-- Jackson -->
+      <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-core</artifactId><version>${jackson.version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>${jackson.version}</version></dependency>
+      <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-annotations</artifactId><version>${jackson.version}</version></dependency>
+
+      <!-- Apache Commons -->
+      <dependency><groupId>commons-codec</groupId><artifactId>commons-codec</artifactId><version>1.4</version></dependency>
+      <dependency><groupId>commons-lang</groupId><artifactId>commons-lang</artifactId><version>2.6</version></dependency>
+      <dependency><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId><version>1.1</version></dependency>
+      <dependency><groupId>commons-dbcp</groupId><artifactId>commons-dbcp</artifactId><version>1.2.1</version></dependency>
+      <dependency><groupId>commons-pool</groupId><artifactId>commons-pool</artifactId><version>1.0</version></dependency>
+      <dependency><groupId>commons-net</groupId><artifactId>commons-net</artifactId><version>1.4.1</version></dependency>
+      <dependency><groupId>commons-httpclient</groupId><artifactId>commons-httpclient</artifactId><version>3.0.1</version></dependency>
+
+      <!-- logging -->
+      <dependency><groupId>log4j</groupId><artifactId>log4j</artifactId><version>1.2.15</version></dependency>
+
+      <!-- xml / soap / jaxb / poi / pdf / mail -->
+      <dependency><groupId>dom4j</groupId><artifactId>dom4j</artifactId><version>2.1.3</version></dependency>
+      <dependency><groupId>org.apache.poi</groupId><artifactId>poi</artifactId><version>${poi.version}</version></dependency>
+      <dependency><groupId>org.apache.poi</groupId><artifactId>poi-scratchpad</artifactId><version>${poi.version}</version></dependency>
+      <dependency><groupId>com.sun.mail</groupId><artifactId>javax.mail</artifactId><version>1.6.2</version></dependency>
+      <dependency><groupId>com.jcraft</groupId><artifactId>jsch</artifactId><version>0.1.55</version></dependency>
+
+      <!-- ---------- proprietary / vendor (uploaded to your Artifactory) ----------
+           Use the EXACT coordinates your Artifactory hosts them under. Examples: -->
+      <dependency><groupId>com.abbyy</groupId><artifactId>FCEngine</artifactId><version>1.0</version></dependency>
+      <dependency><groupId>com.ibm.mq</groupId><artifactId>com.ibm.mq</artifactId><version>1.0</version></dependency>
+      <dependency><groupId>com.citi.isw</groupId><artifactId>iswencryptutility</artifactId><version>1.0</version></dependency>
+      <dependency><groupId>biz.c24</groupId><artifactId>c24-io-api</artifactId><version>3.5</version></dependency>
+      <dependency><groupId>com.prowidesoftware</groupId><artifactId>pw-swift-core</artifactId><version>SRU2016-7.8.5</version></dependency>
+      <!-- ...add the remaining vendor jars with their Artifactory coordinates... -->
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${shade.plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

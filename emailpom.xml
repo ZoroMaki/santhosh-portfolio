@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.citi.cmbtech.isw</groupId>
+    <artifactId>iswadrbatches-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>email</artifactId>
+
+  <dependencies>
+    <!-- only what email's code imports; all provided (from Artifactory) -->
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- if email uses another library module, e.g. vo:
+    <dependency>
+      <groupId>com.citi.cmbtech.isw</groupId>
+      <artifactId>vo</artifactId>
+    </dependency>
+    -->
+  </dependencies>
+</project>

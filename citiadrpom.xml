@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.citi.cmbtech.isw</groupId>
+    <artifactId>iswadrbatches-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>citiadr</artifactId>
+
+  <dependencies>
+
+    <!-- ===== internal library modules: BUNDLED into citiadr.jar ===== -->
+    <dependency>
+      <groupId>com.citi.cmbtech.isw</groupId>
+      <artifactId>email</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.citi.cmbtech.isw</groupId>
+      <artifactId>vo</artifactId>
+    </dependency>
+    <!-- add util/sd/http/commondatasource only if citiadr uses them -->
+
+    <!-- ===== server-provided third-party: compiled, NOT bundled ===== -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.abbyy</groupId>
+      <artifactId>FCEngine</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- ...add the other libs citiadr imports, each as provided... -->
+
+  </dependencies>
+
+  <build>
+    <finalName>citiadr</finalName>   <!-- output: target/citiadr.jar -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <!-- NO Main-Class: multiple entry points.
+                   Run: java -cp "citiadr.jar:/server/libs/*" \
+                        com.citi.cmbtech.isw.citiadr.CitiAdrLoad %1 -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
