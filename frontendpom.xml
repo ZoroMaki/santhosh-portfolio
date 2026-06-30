@@ -6,116 +6,120 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ═══════════════════════════════════════════════════════
-         FRONTEND MODULE — drrevenue-frontend
-         Runs: npm install → vite build → outputs to dist/
-         The drrevenue-web module copies dist/ into the WAR.
-         No Java code. packaging=jar is just a Maven convention
-         for modules that produce no deployable artifact themselves.
-         ═══════════════════════════════════════════════════════ -->
-
     <parent>
-        <groupId>com.isw.drrevenue</groupId>
+        <groupId>citi.icg.isw</groupId>
         <artifactId>drrevenue</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../drrevenue/pom.xml</relativePath>
+        <version>3.0.0</version>
     </parent>
 
     <artifactId>drrevenue-frontend</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>DR Revenue :: Frontend (React/Vite)</name>
 
-    <!-- No Java deps needed — this module is pure Node/npm -->
-    <dependencies/>
+    <!-- ═══════════════════════════════════════════════
+         OS PROFILES
+         Windows → npm.cmd
+         Linux (TeamCity) → /bin/sh -c npm
+         ═══════════════════════════════════════════════ -->
+    <profiles>
 
-    <build>
-        <!-- Source root is the React project folder -->
-        <!-- Adjust this path if your React code is inside web/ or a subfolder -->
-        <sourceDirectory>src</sourceDirectory>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>npm-install</id>
+                                <phase>generate-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>npm.cmd</executable>
+                                    <arguments>
+                                        <argument>install</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm-build</id>
+                                <phase>process-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>npm.cmd</executable>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>build</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <environmentVariables>
+                                        <NODE_ENV>production</NODE_ENV>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
-        <plugins>
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <!-- version inherited from parent pluginManagement -->
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>npm-install</id>
+                                <phase>generate-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>/bin/sh</executable>
+                                    <arguments>
+                                        <argument>-c</argument>
+                                        <argument>npm install</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm-build</id>
+                                <phase>process-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <executable>/bin/sh</executable>
+                                    <arguments>
+                                        <argument>-c</argument>
+                                        <argument>npm run build</argument>
+                                    </arguments>
+                                    <workingDirectory>${project.basedir}</workingDirectory>
+                                    <environmentVariables>
+                                        <NODE_ENV>production</NODE_ENV>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
-                <configuration>
-                    <!-- Where your package.json lives -->
-                    <workingDirectory>${project.basedir}</workingDirectory>
-
-                    <!-- Node/npm versions to download automatically.
-                         These are downloaded into .node/ — no global install needed. -->
-                    <nodeVersion>v20.11.0</nodeVersion>
-                    <npmVersion>10.2.4</npmVersion>
-                </configuration>
-
-                <executions>
-
-                    <!-- Step 1: Download Node + npm (runs once, cached after) -->
-                    <execution>
-                        <id>install-node-npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-
-                    <!-- Step 2: npm install (installs node_modules) -->
-                    <execution>
-                        <id>npm-install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-
-                    <!-- Step 3: vite build → outputs to dist/ -->
-                    <execution>
-                        <id>npm-build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <arguments>run build</arguments>
-                            <!-- Passes production env to Vite -->
-                            <environmentVariables>
-                                <NODE_ENV>production</NODE_ENV>
-                            </environmentVariables>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
-            <!-- Attach dist/ as a build artifact so drrevenue-web can reference it -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dist-to-classes</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/dist</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}/dist</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
+    </profiles>
 
 </project>
