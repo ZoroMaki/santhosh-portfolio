@@ -46,3 +46,27 @@ Still open (needed to finalize all POMs)
 Per-batch dependency map - which library modules each batch (citiadr, gdn, oasistransmission, recon, salesdiscount) actually uses. Only citiadr partially known.
 Inter-library dependencies - does any library module use another (e.g. does email use vo/util)?
 Server lib coordinates - real groupId/artifactId/version for adr_lib/ocr_lib, or confirm you'll register them via mvn install:install-file.
+
+
+
+compressed prompt:
+
+
+Project: Migrate Ant → Maven multi-module. Repo: 7384.icg.issuer.isw-adr-batches/iswadrbatches/
+groupId: com.citi.cmbtech.isw | version: 1.0.0 | Java 11
+
+Library modules (plain jar, no shade): email, vo, util, sd, http, commondatasource
+Batch modules (shaded fat jar, no Main-Class): citiadr, gdn, oasistransmission, recon, salesdiscount
+
+Rules:
+- Each batch bundles ONLY its needed library modules (compile scope)
+- Server libs (adr_lib, ocr_lib, new_lib) → provided scope
+- Run via: java -cp "citiadr.jar:/server/libs/*" <FullyQualifiedClass> %1
+- src layout: src/main/java/com/citi/cmbtech/isw/<module>/
+
+Still needed:
+1. Per-batch → which library modules each batch uses
+2. Inter-library deps (e.g. does email use vo/util?)
+3. Server lib coordinates (groupId/artifactId/version) or confirm install:install-file
+
+Give me: [what you want next — parent pom / batch pom / library pom / full structure]
