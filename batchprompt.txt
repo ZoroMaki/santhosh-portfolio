@@ -1,0 +1,48 @@
+Goal
+Migrate a legacy Ant build.xml Spring/batch project to a Maven multi-module build, where each batch folder (citiadr, gdn, etc.) produces its own self-contained jar, run as batch jobs on Autosys.
+Key facts established
+
+Repo root: 7384.icg.issuer.isw-adr-batches/, with the Maven project under iswadrbatches/.
+Base package: com.citi.cmbtech.isw → so groupId = com.citi.cmbtech.isw, artifactId = module name, version 1.0.0.
+Java 11, build with mvn clean install.
+Two module types:
+Library (non-main): email, vo, util, sd, http, commondatasource → plain jars, no main, no shade.
+Batch (main): citiadr, gdn, oasistransmission, recon, salesdiscount → shaded fat jars.
+
+
+Multiple mains per batch module → no Main-Class in manifest; scripts run via java -cp "citiadr.jar:/server/libs/*" <FullyQualifiedClass> %1.
+Shared code embedding: batch jars must bundle only the library modules they actually use → each batch declares only needed library deps; shade bundles them.
+Server-provided libs (adr_lib, ocr_lib, new lib) → <scope>provided</scope>, compiled against locally but never bundled.
+original-citiadr.jar = shade's pre-shade backup, ignore it; deploy citiadr.jar.
+Why jar was empty: source folders weren't under src/main/java. Maven only compiles src/main/java, so folders must mirror the package path exactly.
+Nested vs shared packages: isw.citiadr.util / isw.citiadr.vo (nested) stay inside citiadr; top-level isw.util / isw.vo become separate shared modules. Different packages, kept separate.
+
+Target structure
+
+
+
+7384.icg.issuer.isw-adr-batches/        <- repo root
+└── iswadrbatches/                       <- PARENT (packaging=pom)
+    ├── pom.xml
+    ├── email/  vo/  util/  sd/  http/  commondatasource/    <- library modules
+    │   └── pom.xml + src/main/java/com/citi/cmbtech/isw/<module>/
+    └── citiadr/  gdn/  oasistransmission/  recon/  salesdiscount/   <- batch modules
+        └── pom.xml + src/main/{java/com/citi/cmbtech/isw/<module>/, resources/}
+
+POM design (3 templates)
+
+Parent: packaging=pom, lists all 11 <modules>, sets Java 11, manages all versions in dependencyManagement (internal modules + server libs), manages shade plugin version.
+Library POM: inherits parent, plain jar, declares only libs its own code uses.
+Batch POM: inherits parent, <finalName> to drop version suffix, shade plugin (no Main-Class), declares only the library modules it uses (compile scope = bundled) + server libs (provided = not bundled).
+
+Decisions locked
+
+groupId everywhere: com.citi.cmbtech.isw
+shade plugin for batch jars (Maven equivalent of Ant's "jar the whole build folder")
+run via -cp + class name (your existing scripts work unchanged)
+
+Still open (needed to finalize all POMs)
+
+Per-batch dependency map - which library modules each batch (citiadr, gdn, oasistransmission, recon, salesdiscount) actually uses. Only citiadr partially known.
+Inter-library dependencies - does any library module use another (e.g. does email use vo/util)?
+Server lib coordinates - real groupId/artifactId/version for adr_lib/ocr_lib, or confirm you'll register them via mvn install:install-file.
